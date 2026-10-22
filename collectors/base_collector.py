@@ -15,7 +15,9 @@ class BaseCollector(ABC):
     platform: str
 
     @abstractmethod
-    def collect(self, query: str, limit: int, use_demo_data: bool) -> list[SocialPost]:
+    def collect(
+        self, query: str, limit: int | None, use_demo_data: bool
+    ) -> list[SocialPost]:
         """Collect public records for a query."""
 
     def demo_posts(self, query: str, limit: int) -> list[SocialPost]:

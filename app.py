@@ -39,7 +39,7 @@ if st.button("Collect from all platforms", type="primary"):
         with st.spinner("Running collectors in parallel..."):
             report = run_all_collectors(
                 query=query.strip(),
-                limit=int(limit),
+                limit=None if limit is None else int(limit),
                 use_demo_data=False,
             )
 
