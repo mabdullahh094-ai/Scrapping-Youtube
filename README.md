@@ -14,7 +14,10 @@ streamlit run app.py
 ```
 
 The app uses live data only; demo records are disabled. Add `YOUTUBE_API_KEY` to
-`.env` for YouTube search.
+`.env` for YouTube search. The UI supports a custom maximum or **All available**,
+which follows YouTube pagination until the API returns no further page. There is
+no truly infinite result set: YouTube controls pagination, search availability,
+and daily API quota.
 
 ## Design
 

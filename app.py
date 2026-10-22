@@ -20,7 +20,16 @@ st.caption("Collect public, API-permitted data from multiple platforms in parall
 with st.sidebar:
     st.header("Collection settings")
     query = st.text_input("Search keyword", placeholder="python programming")
-    limit = st.number_input("Results per platform", min_value=1, max_value=50, value=10)
+    result_mode = st.selectbox(
+        "Number of results",
+        options=["All available", "Custom limit"],
+        help="All available follows YouTube pagination until no more results remain.",
+    )
+    limit = (
+        None
+        if result_mode == "All available"
+        else st.number_input("Maximum results", min_value=1, max_value=500, value=50)
+    )
     st.info("Live API/public data only. Demo records are disabled.")
 
 if st.button("Collect from all platforms", type="primary"):

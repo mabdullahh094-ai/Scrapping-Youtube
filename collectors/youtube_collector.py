@@ -14,30 +14,40 @@ class YouTubeCollector(BaseCollector):
     platform = "youtube"
     endpoint = "https://www.googleapis.com/youtube/v3/search"
 
-    def collect(self, query: str, limit: int, use_demo_data: bool) -> list[SocialPost]:
+    def collect(
+        self, query: str, limit: int | None, use_demo_data: bool
+    ) -> list[SocialPost]:
         api_key = os.getenv("YOUTUBE_API_KEY")
         if not api_key:
             if use_demo_data:
                 return self.demo_posts(query, limit)
             raise CollectorError("YOUTUBE_API_KEY is not configured.")
 
-        response = requests.get(
-            self.endpoint,
-            params={
+        items: list[dict] = []
+        page_token: str | None = None
+        while limit is None or len(items) < limit:
+            page_size = 50 if limit is None else min(50, limit - len(items))
+            params = {
                 "key": api_key,
                 "part": "snippet",
                 "q": query,
                 "type": "video",
-                "maxResults": limit,
-            },
-            timeout=20,
-        )
-        if response.status_code != 200:
-            raise CollectorError(
-                f"YouTube API request failed with HTTP {response.status_code}. "
-                "Check that the key is active and YouTube Data API v3 is enabled."
-            )
-        items = response.json().get("items", [])
+                "maxResults": page_size,
+            }
+            if page_token:
+                params["pageToken"] = page_token
+            response = requests.get(self.endpoint, params=params, timeout=20)
+            if response.status_code != 200:
+                raise CollectorError(
+                    f"YouTube API request failed with HTTP {response.status_code}. "
+                    "Check that the key is active and YouTube Data API v3 is enabled."
+                )
+            payload = response.json()
+            items.extend(payload.get("items", []))
+            page_token = payload.get("nextPageToken")
+            if not page_token:
+                break
+
         return [
             SocialPost(
                 platform=self.platform,

@@ -27,7 +27,9 @@ class CollectionReport:
         return [post for result in self.results for post in result.posts]
 
 
-def run_all_collectors(query: str, limit: int, use_demo_data: bool) -> CollectionReport:
+def run_all_collectors(
+    query: str, limit: int | None, use_demo_data: bool
+) -> CollectionReport:
     collectors: list[BaseCollector] = [
         YouTubeCollector(),
     ]
