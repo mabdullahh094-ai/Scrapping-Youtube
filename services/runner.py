@@ -13,6 +13,7 @@ from collectors.base_collector import (
 from collectors.scrapfly_collector import (
     ScrapFlyFacebookCollector,
     ScrapFlyInstagramCollector,
+    ScrapFlyLinkedInCollector,
     ScrapFlyRedditCollector,
     ScrapFlyTikTokCollector,
     ScrapFlyXCollector,
@@ -51,6 +52,7 @@ def run_all_collectors(
         ScrapFlyInstagramCollector(),
         ScrapFlyFacebookCollector(),
         ScrapFlyTikTokCollector(),
+        ScrapFlyLinkedInCollector(),
     ]
     collector_targets = targets or {}
     results: list[CollectorResult] = []

@@ -148,6 +148,19 @@ class ScrapFlyXCollector(ScrapFlyCollector):
         return lambda: module.scrape_profile(url=target)
 
 
+class ScrapFlyLinkedInCollector(ScrapFlyCollector):
+    platform = "linkedin"
+    module_name = "linkedin"
+    entrypoint = "linkedin.py"
+    scraper_directory = "linkedin-scraper"
+    target_kind = "public profile URL"
+
+    def _operation(
+        self, module: Any, target: str, limit: int | None
+    ) -> Callable[[], Any]:
+        return lambda: module.scrape_profile(urls=[target])
+
+
 def _load_module(module_name: str, platform: str) -> Any:
     directory = {
         "x": "twitter-scraper",
@@ -169,6 +182,8 @@ def _load_module(module_name: str, platform: str) -> Any:
 def _normalize(
     platform: str, raw: Any, target: str, limit: int | None
 ) -> list[SocialPost]:
+    if platform == "linkedin":
+        return _normalize_linkedin(raw, target, limit)
     records = _records(raw)
     if limit is not None:
         records = records[:limit]
@@ -215,6 +230,57 @@ def _normalize(
             )
         )
     return posts
+
+
+def _normalize_linkedin(
+    raw: Any, target: str, limit: int | None
+) -> list[SocialPost]:
+    posts: list[SocialPost] = []
+    for item in _records(raw):
+        if not isinstance(item, dict):
+            continue
+        profile = item.get("profile") or {}
+        profile_url = profile.get("url") or target
+        profile_name = profile.get("name") or target
+        if profile:
+            posts.append(
+                SocialPost(
+                    platform="linkedin",
+                    platform_post_id=str(profile_url),
+                    author_name=str(profile_name),
+                    title=str(profile.get("jobTitle") or profile_name),
+                    content=str(profile.get("description") or ""),
+                    url=str(profile_url),
+                    views_count=_integer(
+                        (profile.get("interactionStatistic") or {}).get(
+                            "userInteractionCount"
+                        )
+                    ),
+                )
+            )
+        for article in item.get("posts") or []:
+            if not isinstance(article, dict):
+                continue
+            url = str(article.get("url") or profile_url)
+            posts.append(
+                SocialPost(
+                    platform="linkedin",
+                    platform_post_id=url,
+                    author_name=str(
+                        (article.get("author") or {}).get("name") or profile_name
+                    ),
+                    title=str(article.get("headline") or ""),
+                    content=str(article.get("headline") or ""),
+                    url=url,
+                    likes_count=_integer(
+                        (article.get("interactionStatistic") or {}).get(
+                            "userInteractionCount"
+                        )
+                    ),
+                    published_at=article.get("datePublished"),
+                )
+            )
+    return posts[:limit] if limit is not None else posts
 
 
 def _records(value: Any) -> list[Any]:

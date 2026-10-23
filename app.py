@@ -32,6 +32,11 @@ with st.sidebar:
     )
     st.text_input("TikTok keyword", placeholder="python", key="target_tiktok")
     st.text_input(
+        "LinkedIn public profile URL",
+        placeholder="https://www.linkedin.com/in/williamhgates",
+        key="target_linkedin",
+    )
+    st.text_input(
         "X profile or post URL",
         placeholder="https://x.com/user",
         key="target_x",
@@ -44,7 +49,15 @@ with st.sidebar:
     )
     targets = {
         platform: str(st.session_state.get(f"target_{platform}", "")).strip()
-        for platform in ("youtube", "reddit", "instagram", "facebook", "tiktok", "x")
+        for platform in (
+            "youtube",
+            "reddit",
+            "instagram",
+            "facebook",
+            "tiktok",
+            "linkedin",
+            "x",
+        )
     }
     if use_keyword_fallback:
         for platform in ("reddit", "instagram", "facebook", "tiktok"):
