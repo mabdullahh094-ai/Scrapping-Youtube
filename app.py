@@ -36,10 +36,20 @@ with st.sidebar:
         placeholder="https://x.com/user",
         key="target_x",
     )
+    use_keyword_fallback = st.checkbox(
+        "Use YouTube keyword for blank platform targets",
+        value=True,
+        help="Uses the YouTube keyword for Reddit, Instagram, Facebook, and TikTok "
+        "when their target field is blank.",
+    )
     targets = {
         platform: str(st.session_state.get(f"target_{platform}", "")).strip()
         for platform in ("youtube", "reddit", "instagram", "facebook", "tiktok", "x")
     }
+    if use_keyword_fallback:
+        for platform in ("reddit", "instagram", "facebook", "tiktok"):
+            if not targets[platform]:
+                targets[platform] = targets["youtube"]
     result_mode = st.selectbox(
         "Number of results",
         options=["All available", "Custom limit"],
