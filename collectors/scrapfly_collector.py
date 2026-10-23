@@ -4,11 +4,16 @@ from __future__ import annotations
 
 import asyncio
 import importlib.util
+import inspect
 import os
 from pathlib import Path
 from typing import Any, Awaitable, Callable
 
-from collectors.base_collector import BaseCollector, CollectorNotConfigured
+from collectors.base_collector import (
+    BaseCollector,
+    CollectorError,
+    CollectorNotConfigured,
+)
 from models.post import SocialPost
 
 
@@ -40,12 +45,20 @@ class ScrapFlyCollector(BaseCollector):
             )
         module = _load_module(self.module_name, self.platform)
         operation = self._operation(module, target, limit)
-        raw = asyncio.run(operation())
+        try:
+            raw = asyncio.run(_consume(operation))
+        except ValueError as error:
+            if "Expecting value" in str(error):
+                raise CollectorError(
+                    f"{self.platform} returned an invalid/empty response. "
+                    "Retry the scrape or use a different public target."
+                ) from error
+            raise
         return _normalize(self.platform, raw, target, limit)
 
     def _operation(
         self, module: Any, target: str, limit: int | None
-    ) -> Callable[[], Awaitable[Any]]:
+    ) -> Callable[[], Any]:
         raise NotImplementedError
 
 
@@ -198,11 +211,22 @@ def _records(value: Any) -> list[Any]:
     if isinstance(value, list):
         return value
     if isinstance(value, dict):
+        if isinstance(value.get("post_data"), list):
+            return value["post_data"]
         for key in ("videos", "posts", "items", "results", "data", "tweets"):
             if isinstance(value.get(key), list):
                 return value[key]
         return [value]
     return []
+
+
+async def _consume(operation: Callable[[], Any]) -> Any:
+    result = operation()
+    if inspect.isasyncgen(result):
+        return [item async for item in result]
+    if inspect.isawaitable(result):
+        return await result
+    raise TypeError(f"ScrapFly operation returned unsupported value: {type(result)!r}")
 
 
 def _integer(value: Any) -> int:
