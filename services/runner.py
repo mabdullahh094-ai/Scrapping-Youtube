@@ -5,7 +5,11 @@ from __future__ import annotations
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass, field
 
-from collectors.base_collector import BaseCollector, CollectorNotConfigured
+from collectors.base_collector import (
+    BaseCollector,
+    CollectorBlocked,
+    CollectorNotConfigured,
+)
 from collectors.scrapfly_collector import (
     ScrapFlyFacebookCollector,
     ScrapFlyInstagramCollector,
@@ -81,6 +85,8 @@ def run_all_collectors(
                         status=(
                             "not configured"
                             if isinstance(error, CollectorNotConfigured)
+                            else "blocked by provider"
+                            if isinstance(error, CollectorBlocked)
                             else "failed"
                         ),
                         error=str(error),

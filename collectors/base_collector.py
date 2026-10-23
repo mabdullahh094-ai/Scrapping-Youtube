@@ -15,6 +15,10 @@ class CollectorNotConfigured(CollectorError):
     """Raised when a platform's required API credentials are missing."""
 
 
+class CollectorBlocked(CollectorError):
+    """Raised when the upstream provider blocks a public scrape."""
+
+
 class BaseCollector(ABC):
     platform: str
 

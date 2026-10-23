@@ -28,7 +28,8 @@ and daily API quota.
   has its own target field in the sidebar.
 - SQLite stores records with a unique `(platform, platform_post_id)` key.
 - Missing credentials appear as `not configured`; API and request errors appear as
-  `failed` in the Streamlit status table.
+  `failed` in the Streamlit status table. ScrapFly anti-bot blocks appear as
+  `blocked by provider`.
 
 Supported environment variables are `YOUTUBE_API_KEY`, `REDDIT_CLIENT_ID`,
 `REDDIT_CLIENT_SECRET`, optional `REDDIT_USER_AGENT`, `X_BEARER_TOKEN`,

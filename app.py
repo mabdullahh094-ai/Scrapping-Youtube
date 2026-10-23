@@ -20,14 +20,30 @@ st.caption("Collect public, API-permitted data from multiple platforms in parall
 with st.sidebar:
     st.header("Collection settings")
     st.caption("Targets use public ScrapFly examples. Do not enter passwords or private URLs.")
-    query = st.text_input("YouTube keyword", placeholder="python programming")
+    query = st.text_input(
+        "YouTube keyword",
+        placeholder="python programming",
+        key="target_youtube",
+    )
     targets = {
         "youtube": query,
-        "reddit": st.text_input("Reddit subreddit", placeholder="python"),
-        "instagram": st.text_input("Instagram username", placeholder="natgeo"),
-        "facebook": st.text_input("Facebook Marketplace query", placeholder="laptop"),
-        "tiktok": st.text_input("TikTok keyword", placeholder="python"),
-        "x": st.text_input("X profile or post URL", placeholder="https://x.com/user"),
+        "reddit": st.text_input(
+            "Reddit subreddit", placeholder="python", key="target_reddit"
+        ),
+        "instagram": st.text_input(
+            "Instagram username", placeholder="natgeo", key="target_instagram"
+        ),
+        "facebook": st.text_input(
+            "Facebook Marketplace query", placeholder="laptop", key="target_facebook"
+        ),
+        "tiktok": st.text_input(
+            "TikTok keyword", placeholder="python", key="target_tiktok"
+        ),
+        "x": st.text_input(
+            "X profile or post URL",
+            placeholder="https://x.com/user",
+            key="target_x",
+        ),
     }
     result_mode = st.selectbox(
         "Number of results",

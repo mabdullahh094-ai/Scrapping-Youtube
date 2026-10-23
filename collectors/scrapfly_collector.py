@@ -11,6 +11,7 @@ from typing import Any, Awaitable, Callable
 
 from collectors.base_collector import (
     BaseCollector,
+    CollectorBlocked,
     CollectorError,
     CollectorNotConfigured,
 )
@@ -52,6 +53,13 @@ class ScrapFlyCollector(BaseCollector):
                 raise CollectorError(
                     f"{self.platform} returned an invalid/empty response. "
                     "Retry the scrape or use a different public target."
+                ) from error
+            raise
+        except Exception as error:
+            if "SHIELD_PROTECTION_FAILED" in str(error):
+                raise CollectorBlocked(
+                    f"{self.platform} was blocked by ScrapFly's anti-bot shield. "
+                    "Try again later or use the platform's official API."
                 ) from error
             raise
         return _normalize(self.platform, raw, target, limit)
