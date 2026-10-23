@@ -6,7 +6,11 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass, field
 
 from collectors.base_collector import BaseCollector
+from collectors.meta_collector import FacebookCollector, InstagramCollector
+from collectors.reddit_collector import RedditCollector
+from collectors.tiktok_collector import TikTokCollector
 from collectors.youtube_collector import YouTubeCollector
+from collectors.x_collector import XCollector
 from models.post import SocialPost
 
 
@@ -32,6 +36,11 @@ def run_all_collectors(
 ) -> CollectionReport:
     collectors: list[BaseCollector] = [
         YouTubeCollector(),
+        RedditCollector(),
+        XCollector(),
+        InstagramCollector(),
+        FacebookCollector(),
+        TikTokCollector(),
     ]
     results: list[CollectorResult] = []
     with ThreadPoolExecutor(max_workers=len(collectors)) as executor:
