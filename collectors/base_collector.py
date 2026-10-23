@@ -11,6 +11,10 @@ class CollectorError(Exception):
     """Expected error raised when a platform cannot be collected."""
 
 
+class CollectorNotConfigured(CollectorError):
+    """Raised when a platform's required API credentials are missing."""
+
+
 class BaseCollector(ABC):
     platform: str
 

@@ -24,7 +24,8 @@ and daily API quota.
 - The YouTube collector returns the normalized `SocialPost` model.
 - Reddit, X, Instagram, Facebook Pages, and TikTok collectors use official APIs.
 - SQLite stores records with a unique `(platform, platform_post_id)` key.
-- API errors are shown in the Streamlit status table.
+- Missing credentials appear as `not configured`; API and request errors appear as
+  `failed` in the Streamlit status table.
 
 Supported environment variables are `YOUTUBE_API_KEY`, `REDDIT_CLIENT_ID`,
 `REDDIT_CLIENT_SECRET`, optional `REDDIT_USER_AGENT`, `X_BEARER_TOKEN`,

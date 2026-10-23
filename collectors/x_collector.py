@@ -6,7 +6,11 @@ import os
 
 import requests
 
-from collectors.base_collector import BaseCollector, CollectorError
+from collectors.base_collector import (
+    BaseCollector,
+    CollectorError,
+    CollectorNotConfigured,
+)
 from models.post import SocialPost
 
 
@@ -18,7 +22,7 @@ class XCollector(BaseCollector):
     ) -> list[SocialPost]:
         bearer_token = os.getenv("X_BEARER_TOKEN")
         if not bearer_token:
-            raise CollectorError("X_BEARER_TOKEN is not configured.")
+            raise CollectorNotConfigured("X_BEARER_TOKEN is not configured.")
 
         response = requests.get(
             "https://api.x.com/2/tweets/search/recent",

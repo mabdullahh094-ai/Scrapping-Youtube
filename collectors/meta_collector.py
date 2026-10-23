@@ -6,7 +6,11 @@ import os
 
 import requests
 
-from collectors.base_collector import BaseCollector, CollectorError
+from collectors.base_collector import (
+    BaseCollector,
+    CollectorError,
+    CollectorNotConfigured,
+)
 from models.post import SocialPost
 
 
@@ -19,7 +23,7 @@ class FacebookCollector(BaseCollector):
         page_id = os.getenv("FACEBOOK_PAGE_ID")
         access_token = os.getenv("META_ACCESS_TOKEN")
         if not page_id or not access_token:
-            raise CollectorError(
+            raise CollectorNotConfigured(
                 "FACEBOOK_PAGE_ID and META_ACCESS_TOKEN are not configured."
             )
         data = _get_graph_feed(page_id, access_token, limit)
@@ -40,7 +44,7 @@ class InstagramCollector(BaseCollector):
         account_id = os.getenv("INSTAGRAM_BUSINESS_ACCOUNT_ID")
         access_token = os.getenv("META_ACCESS_TOKEN")
         if not account_id or not access_token:
-            raise CollectorError(
+            raise CollectorNotConfigured(
                 "INSTAGRAM_BUSINESS_ACCOUNT_ID and META_ACCESS_TOKEN are not configured."
             )
         response = requests.get(

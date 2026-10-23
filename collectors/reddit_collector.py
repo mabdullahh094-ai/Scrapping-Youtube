@@ -6,7 +6,11 @@ import os
 
 import requests
 
-from collectors.base_collector import BaseCollector, CollectorError
+from collectors.base_collector import (
+    BaseCollector,
+    CollectorError,
+    CollectorNotConfigured,
+)
 from models.post import SocialPost
 
 
@@ -19,7 +23,7 @@ class RedditCollector(BaseCollector):
         client_id = os.getenv("REDDIT_CLIENT_ID")
         client_secret = os.getenv("REDDIT_CLIENT_SECRET")
         if not client_id or not client_secret:
-            raise CollectorError(
+            raise CollectorNotConfigured(
                 "REDDIT_CLIENT_ID and REDDIT_CLIENT_SECRET are not configured."
             )
 

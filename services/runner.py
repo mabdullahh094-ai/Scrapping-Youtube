@@ -5,7 +5,7 @@ from __future__ import annotations
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass, field
 
-from collectors.base_collector import BaseCollector
+from collectors.base_collector import BaseCollector, CollectorNotConfigured
 from collectors.meta_collector import FacebookCollector, InstagramCollector
 from collectors.reddit_collector import RedditCollector
 from collectors.tiktok_collector import TikTokCollector
@@ -64,7 +64,11 @@ def run_all_collectors(
                 results.append(
                     CollectorResult(
                         platform=platform,
-                        status="failed",
+                        status=(
+                            "not configured"
+                            if isinstance(error, CollectorNotConfigured)
+                            else "failed"
+                        ),
                         error=str(error),
                     )
                 )

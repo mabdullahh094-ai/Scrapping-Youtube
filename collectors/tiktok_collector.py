@@ -6,7 +6,11 @@ import os
 
 import requests
 
-from collectors.base_collector import BaseCollector, CollectorError
+from collectors.base_collector import (
+    BaseCollector,
+    CollectorError,
+    CollectorNotConfigured,
+)
 from models.post import SocialPost
 
 
@@ -18,7 +22,7 @@ class TikTokCollector(BaseCollector):
     ) -> list[SocialPost]:
         access_token = os.getenv("TIKTOK_ACCESS_TOKEN")
         if not access_token:
-            raise CollectorError("TIKTOK_ACCESS_TOKEN is not configured.")
+            raise CollectorNotConfigured("TIKTOK_ACCESS_TOKEN is not configured.")
 
         response = requests.post(
             "https://open.tiktokapis.com/v2/research/video/query/",

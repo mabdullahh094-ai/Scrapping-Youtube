@@ -6,7 +6,11 @@ import os
 
 import requests
 
-from collectors.base_collector import BaseCollector, CollectorError
+from collectors.base_collector import (
+    BaseCollector,
+    CollectorError,
+    CollectorNotConfigured,
+)
 from models.post import SocialPost
 
 
@@ -21,7 +25,7 @@ class YouTubeCollector(BaseCollector):
         if not api_key:
             if use_demo_data:
                 return self.demo_posts(query, limit)
-            raise CollectorError("YOUTUBE_API_KEY is not configured.")
+            raise CollectorNotConfigured("YOUTUBE_API_KEY is not configured.")
 
         items: list[dict] = []
         page_token: str | None = None
