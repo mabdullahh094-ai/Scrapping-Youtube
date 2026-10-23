@@ -6,11 +6,14 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass, field
 
 from collectors.base_collector import BaseCollector, CollectorNotConfigured
-from collectors.meta_collector import FacebookCollector, InstagramCollector
-from collectors.reddit_collector import RedditCollector
-from collectors.tiktok_collector import TikTokCollector
-from collectors.youtube_collector import YouTubeCollector
-from collectors.x_collector import XCollector
+from collectors.scrapfly_collector import (
+    ScrapFlyFacebookCollector,
+    ScrapFlyInstagramCollector,
+    ScrapFlyRedditCollector,
+    ScrapFlyTikTokCollector,
+    ScrapFlyXCollector,
+    ScrapFlyYouTubeCollector,
+)
 from models.post import SocialPost
 
 
@@ -32,21 +35,32 @@ class CollectionReport:
 
 
 def run_all_collectors(
-    query: str, limit: int | None, use_demo_data: bool
+    query: str,
+    limit: int | None,
+    use_demo_data: bool,
+    targets: dict[str, str] | None = None,
 ) -> CollectionReport:
     collectors: list[BaseCollector] = [
-        YouTubeCollector(),
-        RedditCollector(),
-        XCollector(),
-        InstagramCollector(),
-        FacebookCollector(),
-        TikTokCollector(),
+        ScrapFlyYouTubeCollector(),
+        ScrapFlyRedditCollector(),
+        ScrapFlyXCollector(),
+        ScrapFlyInstagramCollector(),
+        ScrapFlyFacebookCollector(),
+        ScrapFlyTikTokCollector(),
     ]
+    collector_targets = targets or {}
     results: list[CollectorResult] = []
     with ThreadPoolExecutor(max_workers=len(collectors)) as executor:
         futures = {
             executor.submit(
-                collector.collect, query, limit, use_demo_data
+                collector.collect,
+                (
+                    collector_targets.get(collector.platform, "")
+                    if targets is not None
+                    else query
+                ),
+                limit,
+                use_demo_data,
             ): collector.platform
             for collector in collectors
         }

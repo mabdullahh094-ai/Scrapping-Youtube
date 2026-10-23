@@ -23,6 +23,9 @@ and daily API quota.
 
 - The YouTube collector returns the normalized `SocialPost` model.
 - Reddit, X, Instagram, Facebook Pages, and TikTok collectors use official APIs.
+- The ScrapFly mode uses the cloned `ScrapFly-Scrapers` examples for public
+  targets. Configure `SCRAPFLY_KEY` and `SCRAPFLY_SCRAPERS_PATH`; each platform
+  has its own target field in the sidebar.
 - SQLite stores records with a unique `(platform, platform_post_id)` key.
 - Missing credentials appear as `not configured`; API and request errors appear as
   `failed` in the Streamlit status table.

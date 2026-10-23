@@ -19,7 +19,16 @@ st.caption("Collect public, API-permitted data from multiple platforms in parall
 
 with st.sidebar:
     st.header("Collection settings")
-    query = st.text_input("Search keyword", placeholder="python programming")
+    st.caption("Targets use public ScrapFly examples. Do not enter passwords or private URLs.")
+    query = st.text_input("YouTube keyword", placeholder="python programming")
+    targets = {
+        "youtube": query,
+        "reddit": st.text_input("Reddit subreddit", placeholder="python"),
+        "instagram": st.text_input("Instagram username", placeholder="natgeo"),
+        "facebook": st.text_input("Facebook Marketplace query", placeholder="laptop"),
+        "tiktok": st.text_input("TikTok keyword", placeholder="python"),
+        "x": st.text_input("X profile or post URL", placeholder="https://x.com/user"),
+    }
     result_mode = st.selectbox(
         "Number of results",
         options=["All available", "Custom limit"],
@@ -33,14 +42,15 @@ with st.sidebar:
     st.info("Live API/public data only. Demo records are disabled.")
 
 if st.button("Collect from all platforms", type="primary"):
-    if not query.strip():
-        st.warning("Enter a search keyword first.")
+    if not any(value.strip() for value in targets.values()):
+        st.warning("Enter at least one platform target first.")
     else:
         with st.spinner("Running collectors in parallel..."):
             report = run_all_collectors(
                 query=query.strip(),
                 limit=None if limit is None else int(limit),
                 use_demo_data=False,
+                targets=targets,
             )
 
         successful_posts = [
