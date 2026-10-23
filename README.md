@@ -31,6 +31,8 @@ and daily API quota.
   `failed` in the Streamlit status table. ScrapFly anti-bot blocks appear as
   `blocked by provider`.
 - The status table also shows whether each platform target was configured.
+- Facebook Marketplace records include a generated item URL when Facebook
+  provides a listing ID.
 
 Supported environment variables are `YOUTUBE_API_KEY`, `REDDIT_CLIENT_ID`,
 `REDDIT_CLIENT_SECRET`, optional `REDDIT_USER_AGENT`, `X_BEARER_TOKEN`,

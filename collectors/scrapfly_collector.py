@@ -191,6 +191,8 @@ def _normalize(
             or ""
         )
         url = str(record.get("url") or record.get("permalink") or "")
+        if platform == "facebook" and not url and record.get("id"):
+            url = f"https://www.facebook.com/marketplace/item/{record['id']}"
         posts.append(
             SocialPost(
                 platform=platform,
