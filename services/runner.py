@@ -73,11 +73,12 @@ def run_all_collectors(
         for future in as_completed(futures):
             platform = futures[future]
             try:
+                posts = future.result()
                 results.append(
                     CollectorResult(
                         platform=platform,
-                        status="success",
-                        posts=future.result(),
+                        status="success" if posts else "no records",
+                        posts=posts,
                     )
                 )
             except Exception as error:

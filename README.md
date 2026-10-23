@@ -30,7 +30,8 @@ and daily API quota.
 - SQLite stores records with a unique `(platform, platform_post_id)` key.
 - Missing credentials appear as `not configured`; API and request errors appear as
   `failed` in the Streamlit status table. ScrapFly anti-bot blocks appear as
-  `blocked by provider`.
+  `blocked by provider`; valid requests with no returned items appear as
+  `no records`.
 - The status table also shows whether each platform target was configured.
 - Facebook Marketplace records include a generated item URL when Facebook
   provides a listing ID.

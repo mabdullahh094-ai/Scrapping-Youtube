@@ -6,6 +6,7 @@ import asyncio
 import importlib.util
 import inspect
 import os
+import time
 from pathlib import Path
 from typing import Any, Awaitable, Callable
 
@@ -46,23 +47,29 @@ class ScrapFlyCollector(BaseCollector):
             )
         module = _load_module(self.module_name, self.platform)
         operation = self._operation(module, target, limit)
-        try:
-            raw = asyncio.run(_consume(operation))
-        except ValueError as error:
-            if "Expecting value" in str(error):
-                raise CollectorError(
-                    f"{self.platform} returned an invalid/empty response. "
-                    "Retry the scrape or use a different public target."
-                ) from error
-            raise
-        except Exception as error:
-            if "SHIELD_PROTECTION_FAILED" in str(error):
-                raise CollectorBlocked(
-                    f"{self.platform} was blocked by ScrapFly's anti-bot shield. "
-                    "Try again later or use the platform's official API."
-                ) from error
-            raise
-        return _normalize(self.platform, raw, target, limit)
+        for attempt in range(2):
+            try:
+                raw = asyncio.run(_consume(operation))
+                posts = _normalize(self.platform, raw, target, limit)
+                if posts or attempt == 1:
+                    return posts
+                time.sleep(1)
+            except ValueError as error:
+                if "Expecting value" in str(error):
+                    if attempt == 1:
+                        raise CollectorError(
+                            f"{self.platform} returned an invalid/empty response. "
+                            "Retry the scrape or use a different public target."
+                        ) from error
+                    time.sleep(1)
+            except Exception as error:
+                if "SHIELD_PROTECTION_FAILED" in str(error):
+                    raise CollectorBlocked(
+                        f"{self.platform} was blocked by ScrapFly's anti-bot shield. "
+                        "Try again later or use the platform's official API."
+                    ) from error
+                raise
+        return []
 
     def _operation(
         self, module: Any, target: str, limit: int | None
