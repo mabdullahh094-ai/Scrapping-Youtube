@@ -194,39 +194,63 @@ def _normalize(
         identifier = str(
             record.get("id")
             or record.get("videoId")
+            or record.get("postId")
             or record.get("shortcode")
             or record.get("url")
+            or record.get("link")
             or f"{platform}-{index}"
         )
         content = str(
             record.get("text")
             or record.get("description")
+            or record.get("desc")
             or record.get("title")
             or record.get("caption")
+            or record.get("postLabel")
             or ""
         )
-        url = str(record.get("url") or record.get("permalink") or "")
+        url = str(
+            record.get("url")
+            or record.get("permalink")
+            or record.get("link")
+            or record.get("postLink")
+            or ""
+        )
         if platform == "facebook" and not url and record.get("id"):
             url = f"https://www.facebook.com/marketplace/item/{record['id']}"
+        if platform == "tiktok" and not url and record.get("id"):
+            url = f"https://www.tiktok.com/@{record.get('author') or 'video'}/video/{record['id']}"
         posts.append(
             SocialPost(
                 platform=platform,
                 platform_post_id=identifier,
                 author_name=str(
                     record.get("author")
+                    or record.get("owner")
                     or record.get("username")
                     or record.get("channel")
+                    or record.get("authorProfile")
                     or target
                 ),
                 title=content[:120],
                 content=content,
                 url=url,
-                likes_count=_integer(record.get("likes") or record.get("like_count")),
+                likes_count=_integer(
+                    record.get("likes")
+                    or record.get("like_count")
+                    or record.get("postUpvotes")
+                ),
                 comments_count=_integer(
-                    record.get("comments") or record.get("comment_count")
+                    record.get("comments")
+                    or record.get("comment_count")
+                    or record.get("commentCount")
                 ),
                 views_count=_integer(record.get("views") or record.get("view_count")),
-                published_at=record.get("created_at") or record.get("published_at"),
+                published_at=(
+                    record.get("created_at")
+                    or record.get("published_at")
+                    or record.get("publishingDate")
+                ),
             )
         )
     return posts
