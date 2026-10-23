@@ -19,12 +19,10 @@ class YouTubeCollector(BaseCollector):
     endpoint = "https://www.googleapis.com/youtube/v3/search"
 
     def collect(
-        self, query: str, limit: int | None, use_demo_data: bool
+        self, query: str, limit: int | None
     ) -> list[SocialPost]:
         api_key = os.getenv("YOUTUBE_API_KEY")
         if not api_key:
-            if use_demo_data:
-                return self.demo_posts(query, limit)
             raise CollectorNotConfigured("YOUTUBE_API_KEY is not configured.")
 
         items: list[dict] = []

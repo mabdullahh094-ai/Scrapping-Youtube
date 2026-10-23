@@ -36,7 +36,7 @@ class ScrapFlyCollector(BaseCollector):
     target_kind: str
 
     def collect(
-        self, query: str, limit: int | None, use_demo_data: bool
+        self, query: str, limit: int | None
     ) -> list[SocialPost]:
         if not os.getenv("SCRAPFLY_KEY"):
             raise CollectorNotConfigured("SCRAPFLY_KEY is not configured.")
@@ -47,21 +47,21 @@ class ScrapFlyCollector(BaseCollector):
             )
         module = _load_module(self.module_name, self.platform)
         operation = self._operation(module, target, limit)
-        for attempt in range(2):
+        for attempt in range(3):
             try:
                 raw = asyncio.run(_consume(operation))
                 posts = _normalize(self.platform, raw, target, limit)
-                if posts or attempt == 1:
+                if posts or attempt == 2:
                     return posts
-                time.sleep(1)
+                time.sleep(2)
             except ValueError as error:
                 if "Expecting value" in str(error):
-                    if attempt == 1:
+                    if attempt == 2:
                         raise CollectorError(
                             f"{self.platform} returned an invalid/empty response. "
                             "Retry the scrape or use a different public target."
                         ) from error
-                    time.sleep(1)
+                    time.sleep(2)
             except Exception as error:
                 if "SHIELD_PROTECTION_FAILED" in str(error):
                     raise CollectorBlocked(

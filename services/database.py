@@ -63,3 +63,19 @@ def save_posts(posts: list[SocialPost]) -> None:
                 for post in posts
             ],
         )
+
+
+def load_posts() -> list[SocialPost]:
+    """Load all saved normalized records for local browsing/export."""
+    initialize_database()
+    with sqlite3.connect(DATABASE_PATH) as connection:
+        rows = connection.execute(
+            """
+            SELECT platform, platform_post_id, author_name, title, content, url,
+                   likes_count, comments_count, views_count, published_at,
+                   collected_at
+            FROM posts
+            ORDER BY collected_at DESC, id DESC
+            """
+        ).fetchall()
+    return [SocialPost(*row) for row in rows]

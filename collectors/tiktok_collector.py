@@ -18,7 +18,7 @@ class TikTokCollector(BaseCollector):
     platform = "tiktok"
 
     def collect(
-        self, query: str, limit: int | None, use_demo_data: bool
+        self, query: str, limit: int | None
     ) -> list[SocialPost]:
         access_token = os.getenv("TIKTOK_ACCESS_TOKEN")
         if not access_token:

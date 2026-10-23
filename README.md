@@ -13,8 +13,8 @@ Copy-Item .env.example .env
 streamlit run app.py
 ```
 
-The app uses live data only; demo records are disabled. Add the relevant API
-credentials to `.env` for each platform. The UI supports a custom maximum or **All available**,
+The app uses live ScrapFly collection. Add the relevant credentials to `.env`.
+The UI supports a custom maximum or **All available**,
 which follows YouTube pagination until the API returns no further page. There is
 no truly infinite result set: YouTube controls pagination, search availability,
 and daily API quota.
@@ -28,6 +28,8 @@ and daily API quota.
   targets. Configure `SCRAPFLY_KEY` and `SCRAPFLY_SCRAPERS_PATH`; each platform
   has its own target field in the sidebar.
 - SQLite stores records with a unique `(platform, platform_post_id)` key.
+- Saved records are always shown from `data/social_media.db`, including when
+  live provider credits are unavailable.
 - Missing credentials appear as `not configured`; API and request errors appear as
   `failed` in the Streamlit status table. ScrapFly anti-bot blocks appear as
   `blocked by provider`; valid requests with no returned items appear as

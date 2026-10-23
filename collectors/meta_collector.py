@@ -18,7 +18,7 @@ class FacebookCollector(BaseCollector):
     platform = "facebook"
 
     def collect(
-        self, query: str, limit: int | None, use_demo_data: bool
+        self, query: str, limit: int | None
     ) -> list[SocialPost]:
         page_id = os.getenv("FACEBOOK_PAGE_ID")
         access_token = os.getenv("META_ACCESS_TOKEN")
@@ -39,7 +39,7 @@ class InstagramCollector(BaseCollector):
     platform = "instagram"
 
     def collect(
-        self, query: str, limit: int | None, use_demo_data: bool
+        self, query: str, limit: int | None
     ) -> list[SocialPost]:
         account_id = os.getenv("INSTAGRAM_BUSINESS_ACCOUNT_ID")
         access_token = os.getenv("META_ACCESS_TOKEN")

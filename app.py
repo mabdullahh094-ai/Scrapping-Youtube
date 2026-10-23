@@ -73,7 +73,10 @@ with st.sidebar:
         if result_mode == "All available"
         else st.number_input("Maximum results", min_value=1, max_value=500, value=50)
     )
-    st.info("Live API/public data only. Demo records are disabled.")
+    st.warning(
+        "Live ScrapFly mode active. Requests can use your account credits; "
+        "avoid repeated runs if quota is limited."
+    )
 
 if st.button("Collect from all platforms", type="primary"):
     if not any(value.strip() for value in targets.values()):
@@ -83,7 +86,6 @@ if st.button("Collect from all platforms", type="primary"):
             report = run_all_collectors(
                 query=query.strip(),
                 limit=None if limit is None else int(limit),
-                use_demo_data=False,
                 targets=targets,
             )
 

@@ -42,7 +42,6 @@ class CollectionReport:
 def run_all_collectors(
     query: str,
     limit: int | None,
-    use_demo_data: bool,
     targets: dict[str, str] | None = None,
 ) -> CollectionReport:
     collectors: list[BaseCollector] = [
@@ -66,7 +65,6 @@ def run_all_collectors(
                     else query
                 ),
                 limit,
-                use_demo_data,
             ): collector.platform
             for collector in collectors
         }

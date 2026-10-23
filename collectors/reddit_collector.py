@@ -18,7 +18,7 @@ class RedditCollector(BaseCollector):
     platform = "reddit"
 
     def collect(
-        self, query: str, limit: int | None, use_demo_data: bool
+        self, query: str, limit: int | None
     ) -> list[SocialPost]:
         client_id = os.getenv("REDDIT_CLIENT_ID")
         client_secret = os.getenv("REDDIT_CLIENT_SECRET")

@@ -18,7 +18,7 @@ class XCollector(BaseCollector):
     platform = "x"
 
     def collect(
-        self, query: str, limit: int | None, use_demo_data: bool
+        self, query: str, limit: int | None
     ) -> list[SocialPost]:
         bearer_token = os.getenv("X_BEARER_TOKEN")
         if not bearer_token:

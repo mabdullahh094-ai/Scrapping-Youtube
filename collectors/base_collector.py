@@ -1,4 +1,4 @@
-"""Shared collector contract and demo records."""
+"""Shared collector contract."""
 
 from __future__ import annotations
 
@@ -24,22 +24,6 @@ class BaseCollector(ABC):
 
     @abstractmethod
     def collect(
-        self, query: str, limit: int | None, use_demo_data: bool
+        self, query: str, limit: int | None
     ) -> list[SocialPost]:
         """Collect public records for a query."""
-
-    def demo_posts(self, query: str, limit: int) -> list[SocialPost]:
-        return [
-            SocialPost(
-                platform=self.platform,
-                platform_post_id=f"demo-{index}",
-                author_name=f"{self.platform.title()} demo account",
-                title=f"{query} result {index}",
-                content=f"Demo record for {query}. Connect the official API for live data.",
-                url="https://example.com",
-                likes_count=index * 10,
-                comments_count=index,
-                views_count=index * 100,
-            )
-            for index in range(1, limit + 1)
-        ]
