@@ -25,25 +25,20 @@ with st.sidebar:
         placeholder="python programming",
         key="target_youtube",
     )
+    st.text_input("Reddit subreddit", placeholder="python", key="target_reddit")
+    st.text_input("Instagram username", placeholder="natgeo", key="target_instagram")
+    st.text_input(
+        "Facebook Marketplace query", placeholder="laptop", key="target_facebook"
+    )
+    st.text_input("TikTok keyword", placeholder="python", key="target_tiktok")
+    st.text_input(
+        "X profile or post URL",
+        placeholder="https://x.com/user",
+        key="target_x",
+    )
     targets = {
-        "youtube": query,
-        "reddit": st.text_input(
-            "Reddit subreddit", placeholder="python", key="target_reddit"
-        ),
-        "instagram": st.text_input(
-            "Instagram username", placeholder="natgeo", key="target_instagram"
-        ),
-        "facebook": st.text_input(
-            "Facebook Marketplace query", placeholder="laptop", key="target_facebook"
-        ),
-        "tiktok": st.text_input(
-            "TikTok keyword", placeholder="python", key="target_tiktok"
-        ),
-        "x": st.text_input(
-            "X profile or post URL",
-            placeholder="https://x.com/user",
-            key="target_x",
-        ),
+        platform: str(st.session_state.get(f"target_{platform}", "")).strip()
+        for platform in ("youtube", "reddit", "instagram", "facebook", "tiktok", "x")
     }
     result_mode = st.selectbox(
         "Number of results",
@@ -77,6 +72,7 @@ if st.button("Collect from all platforms", type="primary"):
         status_rows = [
             {
                 "Platform": result.platform,
+                "Target configured": bool(targets.get(result.platform)),
                 "Status": result.status,
                 "Records": len(result.posts),
                 "Error": result.error or "",

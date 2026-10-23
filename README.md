@@ -30,6 +30,7 @@ and daily API quota.
 - Missing credentials appear as `not configured`; API and request errors appear as
   `failed` in the Streamlit status table. ScrapFly anti-bot blocks appear as
   `blocked by provider`.
+- The status table also shows whether each platform target was configured.
 
 Supported environment variables are `YOUTUBE_API_KEY`, `REDDIT_CLIENT_ID`,
 `REDDIT_CLIENT_SECRET`, optional `REDDIT_USER_AGENT`, `X_BEARER_TOKEN`,
