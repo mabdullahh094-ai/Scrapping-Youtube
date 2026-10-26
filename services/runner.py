@@ -10,14 +10,14 @@ from collectors.base_collector import (
     CollectorBlocked,
     CollectorNotConfigured,
 )
-from collectors.scrapfly_collector import (
-    ScrapFlyFacebookCollector,
-    ScrapFlyInstagramCollector,
-    ScrapFlyLinkedInCollector,
-    ScrapFlyRedditCollector,
-    ScrapFlyTikTokCollector,
-    ScrapFlyXCollector,
-    ScrapFlyYouTubeCollector,
+from collectors.apify_collector import (
+    ApifyFacebookCollector,
+    ApifyInstagramCollector,
+    ApifyLinkedInCollector,
+    ApifyRedditCollector,
+    ApifyTikTokCollector,
+    ApifyXCollector,
+    ApifyYouTubeCollector,
 )
 from models.post import SocialPost
 
@@ -45,13 +45,13 @@ def run_all_collectors(
     targets: dict[str, str] | None = None,
 ) -> CollectionReport:
     collectors: list[BaseCollector] = [
-        ScrapFlyYouTubeCollector(),
-        ScrapFlyRedditCollector(),
-        ScrapFlyXCollector(),
-        ScrapFlyInstagramCollector(),
-        ScrapFlyFacebookCollector(),
-        ScrapFlyTikTokCollector(),
-        ScrapFlyLinkedInCollector(),
+        ApifyYouTubeCollector(),
+        ApifyRedditCollector(),
+        ApifyXCollector(),
+        ApifyInstagramCollector(),
+        ApifyFacebookCollector(),
+        ApifyTikTokCollector(),
+        ApifyLinkedInCollector(),
     ]
     collector_targets = targets or {}
     results: list[CollectorResult] = []

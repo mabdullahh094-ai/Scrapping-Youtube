@@ -13,7 +13,11 @@ Copy-Item .env.example .env
 streamlit run app.py
 ```
 
-The app uses live ScrapFly collection. Add the relevant credentials to `.env`.
+The app uses live Apify Actor collection. Add `APIFY_API_TOKEN` and one
+`APIFY_ACTOR_<PLATFORM>` value for each platform you want to collect in `.env`.
+Actor input schemas differ, so use `APIFY_INPUT_<PLATFORM>` for a JSON input
+override when an Actor does not use the defaults in
+`collectors/apify_collector.py`.
 The UI supports a custom maximum or **All available**,
 which follows YouTube pagination until the API returns no further page. There is
 no truly infinite result set: YouTube controls pagination, search availability,
@@ -23,27 +27,24 @@ and daily API quota.
 
 - The YouTube collector returns the normalized `SocialPost` model.
 - Reddit, X, Instagram, Facebook Pages, and TikTok collectors use official APIs.
-- LinkedIn public profile URLs are supported through the cloned ScrapFly example.
-- The ScrapFly mode uses the cloned `ScrapFly-Scrapers` examples for public
-  targets. Configure `SCRAPFLY_KEY` and `SCRAPFLY_SCRAPERS_PATH`; each platform
-  has its own target field in the sidebar.
+- LinkedIn public profile URLs are supported through a configured Apify Actor.
+- The Apify mode runs each configured Actor through Apify's
+  `run-sync-get-dataset-items` endpoint and normalizes its dataset records.
+  Each platform has its own Actor ID and target field in the sidebar.
 - SQLite stores records with a unique `(platform, platform_post_id)` key.
 - Saved records are always shown from `data/social_media.db`, including when
   live provider credits are unavailable.
 - Missing credentials appear as `not configured`; API and request errors appear as
-  `failed` in the Streamlit status table. ScrapFly anti-bot blocks appear as
-  `blocked by provider`; valid requests with no returned items appear as
-  `no records`.
+  `failed` in the Streamlit status table; valid requests with no returned
+  items appear as `no records`.
 - The status table also shows whether each platform target was configured.
 - Facebook Marketplace records include a generated item URL when Facebook
   provides a listing ID.
 
-Supported environment variables are `YOUTUBE_API_KEY`, `REDDIT_CLIENT_ID`,
-`REDDIT_CLIENT_SECRET`, optional `REDDIT_USER_AGENT`, `X_BEARER_TOKEN`,
-`META_ACCESS_TOKEN`, `FACEBOOK_PAGE_ID`, `INSTAGRAM_BUSINESS_ACCOUNT_ID`, and
-`TIKTOK_ACCESS_TOKEN`. Instagram and Facebook do not provide arbitrary public
-keyword search through this integration; the collector fetches authorized
-account/page media and filters captions/messages locally. TikTok Research API
-access requires approval from TikTok.
+Supported Apify variables are `APIFY_API_TOKEN`,
+`APIFY_ACTOR_YOUTUBE`, `APIFY_ACTOR_REDDIT`, `APIFY_ACTOR_X`,
+`APIFY_ACTOR_INSTAGRAM`, `APIFY_ACTOR_FACEBOOK`, `APIFY_ACTOR_TIKTOK`, and
+`APIFY_ACTOR_LINKEDIN`. Actor input schemas and platform access vary by Actor;
+configure `APIFY_INPUT_<PLATFORM>` when required.
 
 Only collect public data permitted by each platform's terms and API policy.
